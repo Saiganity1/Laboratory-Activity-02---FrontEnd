@@ -1,4 +1,4 @@
-import {View, Text, FlatList, Button} from "react-native";
+import {View, Text, FlatList, Button, Alert} from "react-native";
 import axios from "axios";
 import {useState, useEffect} from "react";
 import styles from "../styles";
@@ -7,7 +7,7 @@ export default function UserListPage({navigation}){
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/registration/api/users/")
+        axios.get("http://192.168.20.200:8000/registration/api/users/")
         .then((res) => {
             setUsers(res.data);
         })
@@ -19,6 +19,32 @@ export default function UserListPage({navigation}){
 
     const handleEdit = (user) => {
         navigation.navigate("EditUser", {userId: user.id});
+    };
+
+    const handleDelete = (id) => {
+        Alert.alert(
+            "Confirm Deletion",
+            "Are you sure you want to delete this user?",
+            (
+                {text: "Cancel", style: "Cancel"},
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => {
+                        axios.delete(`http://192.168.20.200:8000/registration/api/users/${id}/`)
+                        .then(() =>{
+                            Alert.alert("Success", "User deleted successfully");
+                            
+
+                        })
+                        .catch((err)=>{
+                            Alert.alert("Error", "Failed to delete user");
+                        });
+
+                    },
+                }
+            )
+        );
     };
 
     return (
@@ -45,7 +71,7 @@ export default function UserListPage({navigation}){
                         <View>
                             <Button title="Edit" color="#088cf8ff"
                             onPress={() => handleEdit(item)}></Button>
-                            <Button title="Delete"
+                            <Button title="Delete" onPress={() => handleDelete(item.id)}
                             color="red"></Button>
                         </View>
                     </View>
