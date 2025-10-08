@@ -1,9 +1,9 @@
-import {View, Text, FlatList} from "react-native";
+import {View, Text, FlatList, Button} from "react-native";
 import axios from "axios";
 import {useState, useEffect} from "react";
 import styles from "../styles";
 
-export default function UserListPage(){
+export default function UserListPage({navigation}){
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -16,6 +16,10 @@ export default function UserListPage(){
         })
     },[]
     );
+
+    const handleEdit = (user) => {
+        navigation.navigate("EditUser", {userId: user.id});
+    };
 
     return (
         <View style={styles.container}>
@@ -38,6 +42,12 @@ export default function UserListPage(){
                             <Text style={styles.userLabel}>Email: </Text>
                             {item.email}
                         </Text>
+                        <View>
+                            <Button title="Edit" color="#088cf8ff"
+                            onPress={() => handleEdit(item)}></Button>
+                            <Button title="Delete"
+                            color="red"></Button>
+                        </View>
                     </View>
                 )}
             />
